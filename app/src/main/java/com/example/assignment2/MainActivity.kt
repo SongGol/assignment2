@@ -7,11 +7,15 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.assignment2.databinding.ActivityMainBinding
 
+enum class ActivityCode{
+    MainToNote,
+}
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    var dataSet: ArrayList<ViewItem> = arrayListOf(ViewItem("t1","c1","1-1-1"), ViewItem("t2","c2","1-1-1"))
+    var dataSet: ArrayList<ViewItem> = arrayListOf(ViewItem(1,"t1","c1","1-1-1"), ViewItem(2,"t2","c2","1-1-1"))
 
     //액티비티 연결, 리스너 객체 선언
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,12 +42,22 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, NoteActivity::class.java)
             startActivity(intent)
         }
+
+        binding.deleteItemBtn.setOnClickListener {
+
+        }
+
+        binding.searchItemBtn.setOnClickListener {
+
+        }
+
+
     }
 
     //DB에서 값 읽어오기
     override fun onResume() {
         super.onResume()
-        dataSet.add(ViewItem("t3", "c3", "1-1-1"))
+        dataSet.add(ViewItem(3,"t3", "c3", "1-1-1"))
     }
 
     override fun onRestart() {

@@ -19,11 +19,17 @@ class NoteActivity : AppCompatActivity() {
     //리스너, 브로드캐스트 리시버 등록
     override fun onStart() {
         super.onStart()
+
     }
 
     //DB에서 값 읽어오기
     override fun onResume() {
         super.onResume()
+
+        //현재 시간 값 읽어오기
+
+        //이미 생성된 항목에서 intent로 값을 보내면 그 값을 받아 editText에 넣어줌
+        binding.noteTitle.setText(intent.getStringExtra("title"))
     }
 
     override fun onRestart() {

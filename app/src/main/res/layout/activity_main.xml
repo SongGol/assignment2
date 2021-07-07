@@ -65,6 +65,7 @@
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:scaleType="fitCenter"
+        android:background="?attr/selectableItemBackground"
         app:layout_constraintBottom_toBottomOf="@+id/main_title"
         app:layout_constraintEnd_toStartOf="@+id/delete_item_btn"
         app:layout_constraintTop_toTopOf="@+id/guideline_top"
