@@ -1,5 +1,6 @@
 package com.example.assignment2
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -10,6 +11,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
+    var dataSet: ArrayList<ViewItem> = arrayListOf(ViewItem("t1","c1","1-1-1"), ViewItem("t2","c2","1-1-1"))
+
     //액티비티 연결, 리스너 객체 선언
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,21 +20,30 @@ class MainActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        var dataSet: ArrayList<ViewItem> = arrayListOf(ViewItem("t1","c1","1-1-1"), ViewItem("t2","c2","1-1-1"))
+
 
         binding.mainRecyclerview.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         binding.mainRecyclerview.adapter = MainAdapter(dataSet)
         binding.mainRecyclerview.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+
+        //btn listener 선언
+
     }
 
     //리스너, 브로드캐스트 리시버 등록
     override fun onStart() {
         super.onStart()
+
+        binding.addItemBtn.setOnClickListener {
+            val intent = Intent(this, NoteActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     //DB에서 값 읽어오기
     override fun onResume() {
         super.onResume()
+        dataSet.add(ViewItem("t3", "c3", "1-1-1"))
     }
 
     override fun onRestart() {
