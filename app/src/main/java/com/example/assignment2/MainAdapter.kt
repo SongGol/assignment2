@@ -1,18 +1,14 @@
 package com.example.assignment2
 
 import android.content.Intent
-import android.os.Parcel
-import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.assignment2.databinding.MainRecyclerviewItemBinding
 
-class ViewItem(var id: String="", var title: String = "", var content: String = "", var modified: String)
-
 class MainAdapter(private val dataSet: ArrayList<RecyclerItem>):
-        RecyclerView.Adapter<MainAdapter.NoteHolder>() {
+        RecyclerView.Adapter<MainAdapter.NoteHolder>(), ItemActionListener {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteHolder {
         val binding = MainRecyclerviewItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -42,5 +38,20 @@ class MainAdapter(private val dataSet: ArrayList<RecyclerItem>):
             binding.recyclerItemContent.text = data.content
             binding.recyclerItemModified.text = data.modified
         }
+    }
+
+    override fun onItemMoved(from: Int, to: Int) {
+        if (from == to) {
+            return
+        }
+
+        val fromItem = dataSet.removeAt(from)
+        dataSet.add(to, fromItem)
+        notifyItemMoved(from, to)
+    }
+
+    override fun onItemSwipped(position: Int) {
+        dataSet.removeAt(position)
+        notifyItemRemoved(position)
     }
 }

@@ -6,17 +6,18 @@ import android.os.Bundle
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.assignment2.databinding.ActivityMainBinding
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
-import java.util.Calendar
 
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var mainAdapter: MainAdapter
     //startActivityForResult를 대체
     private lateinit var requestActivity: ActivityResultLauncher<Intent>
 
@@ -29,12 +30,19 @@ class MainActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
+
+        mainAdapter = MainAdapter(dataSet)
         //layout manager설정
         binding.mainRecyclerview.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        binding.mainRecyclerview.adapter = MainAdapter(dataSet)
+        binding.mainRecyclerview.adapter = mainAdapter
         binding.mainRecyclerview.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
         //btn listener 선언
 
+
+
+        //itemTouchHelper선언
+        val itemTouchHelper = ItemTouchHelper(RecyclerItemTouchHelper(mainAdapter))
+        itemTouchHelper.attachToRecyclerView(binding.mainRecyclerview)
     }
 
     //리스너, 브로드캐스트 리시버 등록
@@ -86,6 +94,8 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
     }
+
+
 }
 
 fun getCurrentTime(): String {

@@ -1,25 +1,26 @@
 package com.example.assignment2
 
+import android.widget.Toast
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 
-class ItemTouchHelperCallback(): ItemTouchHelper.Callback() {
-    override fun getMovementFlags(
-        recyclerView: RecyclerView,
-        viewHolder: RecyclerView.ViewHolder
-    ): Int {
-        TODO("Not yet implemented")
+class RecyclerItemTouchHelper(val listener: ItemActionListener): ItemTouchHelper.Callback() {
+
+    override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
+        val dragFlags = ItemTouchHelper.DOWN or ItemTouchHelper.UP
+        val swipperFlags = ItemTouchHelper.START or ItemTouchHelper.END
+        return makeMovementFlags(dragFlags, swipperFlags)
     }
 
-    override fun onMove(
-        recyclerView: RecyclerView,
-        viewHolder: RecyclerView.ViewHolder,
-        target: RecyclerView.ViewHolder
-    ): Boolean {
-        TODO("Not yet implemented")
+    override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+        //Toast.makeText(MainActivity::class.java, "", Toast.LENGTH_SHORT).show()
+        listener.onItemMoved(viewHolder!!.adapterPosition, target!!.adapterPosition)
+        return true
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        TODO("Not yet implemented")
+        listener.onItemSwipped(viewHolder!!.adapterPosition)
     }
+
+    override fun isLongPressDragEnabled(): Boolean = false
 }
