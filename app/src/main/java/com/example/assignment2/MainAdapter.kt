@@ -9,9 +9,9 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.assignment2.databinding.MainRecyclerviewItemBinding
 
-class ViewItem(var id: Int=-1, var title: String = "", var content: String = "", var modified: String)
+class ViewItem(var id: String="", var title: String = "", var content: String = "", var modified: String)
 
-class MainAdapter(private val dataSet: ArrayList<ViewItem>):
+class MainAdapter(private val dataSet: ArrayList<RecyclerItem>):
         RecyclerView.Adapter<MainAdapter.NoteHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteHolder {
@@ -20,17 +20,15 @@ class MainAdapter(private val dataSet: ArrayList<ViewItem>):
     }
 
     override fun onBindViewHolder(holder: NoteHolder, position: Int) {
-        val viewItem: ViewItem = dataSet[position]
-        holder.bind(viewItem)
+        val item: RecyclerItem = dataSet[position]
+        holder.bind(item)
 
         //리스너 등록
         holder.itemView.setOnClickListener{
             val intent = Intent(holder.itemView.context, NoteActivity::class.java)
-            //intent에 값 넣어 전달
-            intent.putExtra("id", viewItem.id)
-            intent.putExtra("title", viewItem.title)
-            intent.putExtra("content", viewItem.content)
-            intent.putExtra("modified", viewItem.modified)
+            //intent에 Parcelable객체 값 넣어 전달
+            val data = RecyclerItem(item.id, item.title, item.content, item.modified)
+            intent.putExtra("data", data)
             ContextCompat.startActivity(holder.itemView.context, intent, null)
         }
     }
@@ -39,7 +37,7 @@ class MainAdapter(private val dataSet: ArrayList<ViewItem>):
 
     class NoteHolder(private val binding: MainRecyclerviewItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(data: ViewItem) {
+        fun bind(data: RecyclerItem) {
             binding.recyclerItemTitle.text = data.title
             binding.recyclerItemContent.text = data.content
             binding.recyclerItemModified.text = data.modified
