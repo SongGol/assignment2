@@ -5,9 +5,9 @@ import android.os.Parcelable
 
 class RecyclerItem() : Parcelable {
     var id: String? = null
-    var modified: String? = null
     var title: String? = null
     var content: String? = null
+    var modified: String? = null
 
     constructor(parcel: Parcel?) : this() {
         id = parcel?.readString()
@@ -42,5 +42,10 @@ class RecyclerItem() : Parcelable {
         override fun newArray(size: Int): Array<RecyclerItem?> {
             return arrayOfNulls(size)
         }
+    }
+
+    override fun toString(): String {
+        return "id: " + this.id + ", title: " + this.title +
+                ", content: " + this.content + ", modified: " + this.modified
     }
 }
