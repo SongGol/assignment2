@@ -5,9 +5,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,7 +25,7 @@ class MainActivity : AppCompatActivity() {
     //startActivityForResult를 대체
     private lateinit var requestActivity: ActivityResultLauncher<Intent>
 
-    var dataSet: ArrayList<RecyclerItem> = arrayListOf(RecyclerItem("1","t1","c1","1-1-1"), RecyclerItem("2","t2","c2","1-1-1"))
+    var dataSet: ArrayList<RecyclerItem> = arrayListOf<RecyclerItem>()
 
     //액티비티 연결, 리스너 객체 선언
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,18 +50,12 @@ class MainActivity : AppCompatActivity() {
         itemTouchHelper.attachToRecyclerView(binding.mainRecyclerview)
 
         //여기사 리스너 선언
-    }
-
-    //리스너, 브로드캐스트 리시버 등록
-    override fun onStart() {
-        super.onStart()
-        Log.d("MainActivity onStart()", "test")
         //노트 추가버튼
         binding.addItemBtn.setOnClickListener {
             val intent = Intent(this, NoteActivity::class.java)
             val data = RecyclerItem(getCurrentTime(), "", "", "")
             intent.putExtra("data", data)
-            requestActivity.launch(intent)
+            ContextCompat.startActivity(applicationContext, intent, null)
         }
         //노트 삭제 버튼
         binding.deleteItemBtn.setOnClickListener {
@@ -69,21 +65,12 @@ class MainActivity : AppCompatActivity() {
         binding.searchItemBtn.setOnClickListener {
 
         }
+    }
 
-        requestActivity = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                activityResult ->
-
-            if (activityResult.resultCode == Activity.RESULT_OK) {
-                Log.i("requestActivity", "in here")
-                val dataIntent = activityResult.data
-                val data: RecyclerItem? = dataIntent?.getParcelableExtra<RecyclerItem>("data")
-                if (data != null) {
-                    dataSet.add(data)
-                    binding.mainRecyclerview.adapter?.notifyDataSetChanged()
-                }
-            }
-
-        }
+    //리스너, 브로드캐스트 리시버 등록
+    override fun onStart() {
+        super.onStart()
+        Log.d("MainActivity onStart()", "test")
     }
 
     //DB에서 값 읽어오기
@@ -94,12 +81,10 @@ class MainActivity : AppCompatActivity() {
 
         val allEntries: Map<String, *> = getSharedPreferences("note_pref", Context.MODE_PRIVATE).all
         for ((key, value) in allEntries) {
-            Log.d("map key: ", key)
             Log.d("map value: ", (SharedPreferenceManager.getObject(applicationContext, key, RecyclerItem(key,"","",""))).toString())
-            //Log.d("map values", key + ": " + SharedPreferenceManager.getObject(applicationContext, key, RecyclerItem()).title)
+            Log.d("map value: ", value.toString())
             dataSet.add(SharedPreferenceManager.getObject(applicationContext, key, RecyclerItem(key,"","","")))
         }
-        Log.i("MainActivity onResume()", "end")
     }
 
     override fun onRestart() {

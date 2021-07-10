@@ -9,9 +9,10 @@ import com.example.assignment2.databinding.MainRecyclerviewItemBinding
 
 class MainAdapter(private val dataSet: ArrayList<RecyclerItem>):
         RecyclerView.Adapter<MainAdapter.NoteHolder>(), ItemActionListener {
+    private lateinit var binding: MainRecyclerviewItemBinding
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteHolder {
-        val binding = MainRecyclerviewItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        binding = MainRecyclerviewItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return NoteHolder(binding)
     }
 
@@ -51,6 +52,10 @@ class MainAdapter(private val dataSet: ArrayList<RecyclerItem>):
     }
 
     override fun onItemSwipped(position: Int) {
+        val id = dataSet[position].id
+        if (id != null) {
+            SharedPreferenceManager.removeItem(binding.root.context, id)
+        }
         dataSet.removeAt(position)
         notifyItemRemoved(position)
     }

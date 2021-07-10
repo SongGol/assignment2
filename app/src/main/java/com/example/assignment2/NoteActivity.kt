@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -25,8 +26,15 @@ class NoteActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        data = intent?.getParcelableExtra<RecyclerItem>("data")
-        modified = data?.modified
+        if (savedInstanceState != null) {
+            with(savedInstanceState) {
+                binding.noteTitle.setText(getString(STATE_TITLE))
+                binding.noteContent.setText(getString(STATE_CONTENT))
+            }
+        } else {
+            data = intent?.getParcelableExtra<RecyclerItem>("data")
+            modified = data?.modified
+        }
     }
 
     //리스너, 브로드캐스트 리시버 등록
@@ -59,10 +67,7 @@ class NoteActivity : AppCompatActivity() {
         Log.d("NoteActivity onPause()", "test")
 
         val data = RecyclerItem(id, binding.noteTitle.text.toString(), binding.noteContent.text.toString(), getCurrentTime())
-        intent.putExtra("data", data)
-
         SharedPreferenceManager.putObject(applicationContext, id, data)
-        Log.i("NoteActivity onStop()", "putObject success, id: "+id)
     }
 
     //DB에 데이터 수정 및 저장
@@ -70,11 +75,26 @@ class NoteActivity : AppCompatActivity() {
         super.onStop()
         Log.d("NoteActivity onStop()", "test")
 
+        Toast.makeText(binding.root.context, "저장되었습니다", Toast.LENGTH_SHORT).show()
     }
 
     //리스너 해제 및 자원정리, 마지막으로 notification띄우기
     override fun onDestroy() {
         super.onDestroy()
         Log.d("NoteActivity onDestroy()", "test")
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        Log.d("NoteActivity onSaveInstanceState()", "test")
+        outState?.run {
+            putString(STATE_TITLE, binding.noteTitle.text.toString())
+            putString(STATE_CONTENT, binding.noteContent.text.toString())
+        }
+        super.onSaveInstanceState(outState)
+    }
+
+    companion object {
+        val STATE_TITLE = "noteTitle"
+        val STATE_CONTENT = "noteContent"
     }
 }

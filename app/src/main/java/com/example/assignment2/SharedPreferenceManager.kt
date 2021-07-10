@@ -57,4 +57,10 @@ object SharedPreferenceManager {
         val json: String? = editor.getString(KEY, gson.toJson(defaultValue))
         return gson.fromJson(json, RecyclerItem::class.java)
     }
+
+    fun removeItem(context: Context?, KEY: String) {
+        val editor = getSharedPreferences(context!!).edit()
+        editor.remove(KEY)
+        editor.apply()
+    }
 }
