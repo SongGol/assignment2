@@ -8,6 +8,8 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.example.assignment2.databinding.ActivityNoteBinding
 import kotlin.math.log
 
@@ -18,6 +20,8 @@ class NoteActivity : AppCompatActivity() {
     private var id: String = ""
     private var modified: String? = null
 
+    private lateinit var model: NoteViewModel
+
     //액티비티 연결, 리스너 객체 선언
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,6 +29,18 @@ class NoteActivity : AppCompatActivity() {
         binding = ActivityNoteBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+/*
+        //live data observer등록
+        model = ViewModelProvider(this).get(NoteViewModel::class.java)
+        val titleObserver = Observer<String> { newTitle ->
+            binding.noteTitle.setText(newTitle)
+        }
+        val contentObserver = Observer<String> { newContent ->
+            binding.noteContent.setText(newContent)
+        }
+        model.currentTitle.observe(this, titleObserver)
+        model.currentContent.observe(this, contentObserver)
+*/
 
         if (savedInstanceState != null) {
             with(savedInstanceState) {
@@ -34,6 +50,11 @@ class NoteActivity : AppCompatActivity() {
         } else {
             data = intent?.getParcelableExtra<RecyclerItem>("data")
             modified = data?.modified
+            //model.setValues(data?.title, data?.content)
+
+            binding.noteTitle.setText(data?.title)
+            binding.noteContent.setText(data?.content)
+            binding.noteModified.setText(modified)
         }
     }
 
@@ -51,9 +72,9 @@ class NoteActivity : AppCompatActivity() {
         //id는 항상 있음
         id = (data?.id)?:""
         //Parcelable로 값 받아오기
-        binding.noteTitle.setText(data?.title)
-        binding.noteContent.setText(data?.content)
-        binding.noteModified.setText(data?.modified)
+        //binding.noteTitle.setText(data?.title)
+        //binding.noteContent.setText(data?.content)
+        binding.noteModified.setText(modified)
     }
 
     override fun onRestart() {
@@ -68,6 +89,8 @@ class NoteActivity : AppCompatActivity() {
 
         val data = RecyclerItem(id, binding.noteTitle.text.toString(), binding.noteContent.text.toString(), getCurrentTime())
         SharedPreferenceManager.putObject(applicationContext, id, data)
+
+        //model.setValues(binding.noteTitle.text.toString(), binding.noteContent.text.toString())
     }
 
     //DB에 데이터 수정 및 저장
@@ -75,6 +98,7 @@ class NoteActivity : AppCompatActivity() {
         super.onStop()
         Log.d("NoteActivity onStop()", "test")
 
+        modified = getCurrentTime()
         Toast.makeText(binding.root.context, "저장되었습니다", Toast.LENGTH_SHORT).show()
     }
 
@@ -91,6 +115,13 @@ class NoteActivity : AppCompatActivity() {
             putString(STATE_CONTENT, binding.noteContent.text.toString())
         }
         super.onSaveInstanceState(outState)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        Log.d("NoteActivity onRestoreInstanceState()", "test")
+        binding.noteTitle.setText(savedInstanceState.getString(STATE_TITLE))
+        binding.noteContent.setText(savedInstanceState.getString(STATE_CONTENT))
     }
 
     companion object {

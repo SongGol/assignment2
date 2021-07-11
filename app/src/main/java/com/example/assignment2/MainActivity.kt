@@ -22,8 +22,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var mainAdapter: MainAdapter
-    //startActivityForResult를 대체
-    private lateinit var requestActivity: ActivityResultLauncher<Intent>
 
     var dataSet: ArrayList<RecyclerItem> = arrayListOf<RecyclerItem>()
 
@@ -36,26 +34,23 @@ class MainActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-
         mainAdapter = MainAdapter(dataSet)
         //layout manager설정
         binding.mainRecyclerview.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         binding.mainRecyclerview.adapter = mainAdapter
         binding.mainRecyclerview.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
-        //btn listener 선언
-
 
         //itemTouchHelper선언
         val itemTouchHelper = ItemTouchHelper(RecyclerItemTouchHelper(mainAdapter))
         itemTouchHelper.attachToRecyclerView(binding.mainRecyclerview)
 
-        //여기사 리스너 선언
+        //여기서 리스너 선언
         //노트 추가버튼
         binding.addItemBtn.setOnClickListener {
             val intent = Intent(this, NoteActivity::class.java)
             val data = RecyclerItem(getCurrentTime(), "", "", "")
             intent.putExtra("data", data)
-            ContextCompat.startActivity(applicationContext, intent, null)
+            ContextCompat.startActivity(binding.root.context, intent, null)
         }
         //노트 삭제 버튼
         binding.deleteItemBtn.setOnClickListener {

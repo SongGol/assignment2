@@ -53,8 +53,8 @@ object SharedPreferenceManager {
 
     fun getObject(context: Context?, KEY: String, defaultValue: RecyclerItem?): RecyclerItem {
         val gson = Gson()
-        val editor = getSharedPreferences(context!!)
-        val json: String? = editor.getString(KEY, gson.toJson(defaultValue))
+        val mPref = getSharedPreferences(context!!)
+        val json: String? = mPref.getString(KEY, gson.toJson(defaultValue))
         return gson.fromJson(json, RecyclerItem::class.java)
     }
 
